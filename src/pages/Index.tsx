@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-
-const DEFAULT_SECONDS = 25 * 60; // 25 minutos
+import { Moon, Sun } from "lucide-react";
 
 const formatTime = (totalSeconds: number) => {
   const m = Math.floor(totalSeconds / 60)
@@ -15,9 +16,30 @@ const formatTime = (totalSeconds: number) => {
 };
 
 const Index = () => {
-  const [secondsLeft, setSecondsLeft] = useState<number>(DEFAULT_SECONDS);
+  // Duração editável (minutos)
+  const [durationMinutes, setDurationMinutes] = useState<number>(25);
+  const [secondsLeft, setSecondsLeft] = useState<number>(25 * 60);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const intervalRef = useRef<number | null>(null);
+
+  // Tema claro/escuro
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "light";
+    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
+    if (stored) return stored;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   // Beep suave ao finalizar
   const playBeep = () => {
@@ -27,7 +49,7 @@ const Index = () => {
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.type = "sine";
-    o.frequency.value = 880; // tom alto e suave
+    o.frequency.value = 880;
     o.connect(g);
     g.connect(ctx.destination);
     g.gain.setValueAtTime(0.0001, ctx.currentTime);
@@ -64,7 +86,17 @@ const Index = () => {
   const toggle = () => setIsRunning((r) => !r);
   const reset = () => {
     setIsRunning(false);
-    setSecondsLeft(DEFAULT_SECONDS);
+    setSecondsLeft(durationMinutes * 60);
+  };
+
+  const applyDuration = () => {
+    if (durationMinutes < 1) {
+      toast.error("A duração mínima é 1 minuto.");
+      return;
+    }
+    setIsRunning(false);
+    setSecondsLeft(durationMinutes * 60);
+    toast.success(`Duração definida para ${durationMinutes} min.`);
   };
 
   const progressLabel = useMemo(
@@ -75,12 +107,17 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <main className="w-full max-w-md animate-fade-in">
-        <header className="mb-10 text-center">
-          <h1 className="text-4xl font-bold tracking-tight">Pomodoro Timer</h1>
-          <p className="text-muted-foreground mt-2">Foco simples, resultados reais.</p>
+        <header className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Pomodoro Timer</h1>
+            <p className="text-muted-foreground mt-1 text-sm">Foco simples, resultados reais.</p>
+          </div>
+          <Button variant="outline" size="icon" onClick={toggleTheme} aria-label="Alternar tema" className="hover-scale">
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
         </header>
 
-        <section aria-label="Timer Pomodoro" className="bg-card border rounded-lg shadow-sm p-8">
+        <section aria-label="Timer Pomodoro" className="bg-card border rounded-lg shadow-sm p-6">
           <div className="text-center">
             <div className="text-7xl font-semibold tabular-nums select-none" aria-live="polite" aria-atomic>
               {formatTime(secondsLeft)}
@@ -88,7 +125,25 @@ const Index = () => {
             <p className="mt-3 text-sm text-muted-foreground">{progressLabel}</p>
           </div>
 
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
+            <div>
+              <Label htmlFor="minutes">Duração (min)</Label>
+              <Input
+                id="minutes"
+                type="number"
+                min={1}
+                max={180}
+                value={durationMinutes}
+                onChange={(e) => setDurationMinutes(Number(e.target.value))}
+                disabled={isRunning}
+              />
+            </div>
+            <Button onClick={applyDuration} disabled={isRunning} className="hover-scale" aria-label="Definir duração">
+              Definir
+            </Button>
+          </div>
+
+          <div className="mt-6 flex items-center justify-center gap-3">
             <Button onClick={toggle} className="hover-scale" aria-label={isRunning ? "Pausar" : "Iniciar"}>
               {isRunning ? "Pausar" : "Iniciar"}
             </Button>
@@ -99,7 +154,7 @@ const Index = () => {
         </section>
 
         <aside className="sr-only">
-          Duração padrão de 25 minutos. Use os botões para iniciar, pausar e resetar o contador.
+          Duração padrão editável em minutos. Use os botões para iniciar, pausar e resetar o contador. Alternância de tema disponível.
         </aside>
       </main>
     </div>
