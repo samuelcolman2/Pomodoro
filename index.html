@@ -1,41 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pomodoro Timer Minimalista — Foco e Produtividade</title>
-    <meta name="description" content="Pomodoro Timer minimalista com tema preto e roxo. Ciclo padrão de 25 minutos com iniciar, pausar, resetar e alerta sonoro." />
-    <meta name="author" content="Lovable" />
-    <link rel="canonical" href="/" />
+<html lang="pt-br" data-theme="dark">
 
-    <meta property="og:title" content="Pomodoro Timer Minimalista — Foco e Produtividade" />
-    <meta property="og:description" content="Timer de 25 minutos moderno e responsivo com alerta sonoro. Foque no essencial." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+<body>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <main class="container">
+        <header>
+            <h1>Pomodoro Timer</h1>
+            <p>Foco simples, resultados reais.</p>
+            <button id="theme-toggle" title="Mudar tema">☀️</button>
+        </header>
 
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Pomodoro Timer Minimalista",
-        "applicationCategory": "Productivity",
-        "operatingSystem": "Web",
-        "description": "Timer Pomodoro de 25 minutos com iniciar, pausar, resetar e alerta sonoro.",
-        "url": "/"
-      }
-    </script>
-  </head>
+        <div class="timer-card">
+            <div id="time-display">25:00</div>
+            <p id="status-display">Pronto</p>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+            <div class="settings">
+                <label for="duration-input">Duração (min)</label>
+                <input type="number" id="duration-input" value="25" min="1">
+                <button id="set-button">Definir</button>
+            </div>
+
+            <div class="controls">
+                <button id="start-pause-button">Iniciar</button>
+                <button id="reset-button">Resetar</button>
+            </div>
+        </div>
+    </main>
+
+    <audio id="alarm-sound" src="audio/alarm.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+
 </html>
