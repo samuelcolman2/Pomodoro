@@ -10,14 +10,15 @@ const alarmSound = document.getElementById('alarm-sound');
 const htmlElement = document.documentElement;
 
 // --- Variáveis de Estado ---
-let timer; // Armazena o ID do setInterval para podermos pará-lo
-let totalSeconds; // Tempo total definido em segundos
+let timer; // ID do setInterval
+let totalSeconds; // Tempo total em segundos
 let secondsLeft; // Segundos restantes
 let isRunning = false; // Flag para controlar se o timer está rodando
+let endTime = null; // Horário absoluto em que o timer acaba
 
 // --- Funções ---
 
-// Atualiza o display do tempo no formato MM:SS
+// Atualiza o display no formato MM:SS
 function updateDisplay() {
     const minutes = Math.floor(secondsLeft / 60);
     const seconds = secondsLeft % 60;
@@ -35,14 +36,19 @@ function toggleTimer() {
     } else {
         // Iniciar
         if (secondsLeft <= 0) {
-            resetTimer(); // Se o tempo acabou, reseta antes de começar
+            resetTimer();
         }
+
+        // Define o horário absoluto de término
+        endTime = Date.now() + secondsLeft * 1000;
+
         isRunning = true;
         startPauseButton.textContent = 'Pausar';
         statusDisplay.textContent = 'Contando...';
-        
+
         timer = setInterval(() => {
-            secondsLeft--;
+            // Calcula quanto tempo realmente falta
+            secondsLeft = Math.max(Math.round((endTime - Date.now()) / 1000), 0);
             updateDisplay();
 
             if (secondsLeft <= 0) {
@@ -50,17 +56,16 @@ function toggleTimer() {
                 isRunning = false;
                 startPauseButton.textContent = 'Iniciar';
                 statusDisplay.textContent = 'Tempo esgotado!';
-                alarmSound.play(); // Toca o som do alarme
+                alarmSound.play();
             }
-        }, 1000); // Executa a cada 1 segundo
+        }, 1000);
     }
 }
 
-// Define o tempo inicial com base no input
+// Define o tempo inicial baseado no input
 function setTimer() {
-    // Para o timer se estiver rodando
     if (isRunning) {
-        toggleTimer();
+        toggleTimer(); // Pausa antes de redefinir
     }
     const minutes = parseInt(durationInput.value, 10);
     if (minutes > 0) {
@@ -72,7 +77,7 @@ function setTimer() {
     }
 }
 
-// Reseta o timer para o valor inicial definido
+// Reseta o timer
 function resetTimer() {
     clearInterval(timer);
     isRunning = false;
@@ -80,9 +85,10 @@ function resetTimer() {
     updateDisplay();
     startPauseButton.textContent = 'Iniciar';
     statusDisplay.textContent = 'Pronto';
+    endTime = null;
 }
 
-// Alterna entre o tema claro e escuro
+// Alterna entre tema claro e escuro
 function toggleTheme() {
     const currentTheme = htmlElement.getAttribute('data-theme');
     if (currentTheme === 'dark') {
@@ -94,21 +100,17 @@ function toggleTheme() {
     }
 }
 
-
-// --- Event Listeners (Ouvintes de Eventos) ---
+// --- Event Listeners ---
 startPauseButton.addEventListener('click', toggleTimer);
 resetButton.addEventListener('click', resetTimer);
 setButton.addEventListener('click', setTimer);
 themeToggleButton.addEventListener('click', toggleTheme);
 
-
 // --- Inicialização ---
-// Define o estado inicial quando a página carrega
 function initialize() {
     totalSeconds = parseInt(durationInput.value, 10) * 60;
     secondsLeft = totalSeconds;
     updateDisplay();
 }
 
-// Chama a função de inicialização
 initialize();
