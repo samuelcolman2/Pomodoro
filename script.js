@@ -22,7 +22,7 @@ let endTime = null; // Horário absoluto em que o timer acaba
 // Novas variáveis de estado para controlar os modos e durações
 let currentMode = 'focus'; // Pode ser 'focus' ou 'rest'
 let focusDuration = 40 * 60; // Duração do foco em segundos
-let restDuration = 10 * 60;  // Duração do descanso em segundos
+let restDuration = 5 * 60;  // Duração do descanso em segundos
 
 // --- Funções ---
 
@@ -44,13 +44,11 @@ function handleTimerEnd() {
     alarmSound.play();
 
     if (currentMode === 'focus') {
-        statusDisplay.textContent = 'Foco finalizado! Iniciando descanso...';
+        statusDisplay.textContent = 'Foco finalizado! Hora de descansar.';
         switchMode('rest');
-        // Atraso pequeno para o usuário ler a mensagem antes do timer começar
     } else {
         statusDisplay.textContent = 'Descanso finalizado!';
         switchMode('focus');
-        // Não inicia o próximo foco automaticamente, deixa o usuário começar quando estiver pronto.
     }
 }
 
@@ -104,7 +102,6 @@ function setTimer() {
         resetTimer();
         statusDisplay.textContent = 'Pronto para iniciar';
     } else {
-        // Em vez de alert(), usamos o status para feedback
         statusDisplay.textContent = "Insira um valor válido.";
     }
 }
@@ -134,10 +131,12 @@ function switchMode(newMode) {
     currentMode = newMode;
 
     if (currentMode === 'focus') {
+        htmlElement.removeAttribute('data-mode');
         focusModeButton.classList.add('active');
         restModeButton.classList.remove('active');
         durationInput.value = focusDuration / 60;
     } else { // 'rest'
+        htmlElement.setAttribute('data-mode', 'rest');
         restModeButton.classList.add('active');
         focusModeButton.classList.remove('active');
         durationInput.value = restDuration / 60;
@@ -169,10 +168,8 @@ restModeButton.addEventListener('click', () => switchMode('rest'));
 
 // --- Inicialização ---
 function initialize() {
-    // Define a duração inicial do foco com base no valor do input
     focusDuration = parseInt(durationInput.value, 10) * 60;
-    // Define uma duração padrão para o descanso
-    restDuration = 10 * 60;
+    restDuration = 5 * 60;
     totalSeconds = focusDuration;
     secondsLeft = totalSeconds;
     updateDisplay();

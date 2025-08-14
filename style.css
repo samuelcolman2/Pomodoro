@@ -3,7 +3,7 @@
 
 /* --- Variáveis de Tema --- */
 :root {
-    /* Tema Escuro (Padrão) */
+    /* Tema Escuro (Padrão - Foco) */
     --bg-color: #0f172a;
     --text-color: #e2e8f0;
     --card-bg-color: #1e293b;
@@ -16,7 +16,7 @@
 }
 
 [data-theme="light"] {
-    /* Tema Claro */
+    /* Tema Claro (Padrão - Foco) */
     --bg-color: #f1f5f9;
     --text-color: #1e293b;
     --card-bg-color: #ffffff;
@@ -27,6 +27,29 @@
     --primary-button-text-color: #f8fafc;
     --input-bg-color: #e2e8f0;
 }
+
+[data-mode="rest"][data-theme="dark"] {
+    --bg-color: #3c273f;
+    --text-color: #e6e0ff;
+    --card-bg-color: #4f4a74;
+    --button-bg-color: #5f5a8f;
+    --button-hover-bg-color: #7a73b8;
+    --primary-button-bg-color: #d178ec;
+    --primary-button-text-color: #2a273f;
+    --input-bg-color: #5f5a8f;
+}
+
+[data-mode="rest"][data-theme="light"] {
+    --bg-color: #f2effc;
+    --text-color: #3e3a5a;
+    --card-bg-color: #ffffff;
+    --button-bg-color: #dcd6f7;
+    --button-hover-bg-color: #c6bce9;
+    --primary-button-bg-color: #8c64d8;
+    --primary-button-text-color: #ffffff;
+    --input-bg-color: #dcd6f7;
+}
+
 
 /* --- Estilos Gerais --- */
 * {
