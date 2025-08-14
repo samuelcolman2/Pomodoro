@@ -44,18 +44,18 @@ body {
     align-items: center;
     min-height: 100vh;
     transition: background-color 0.3s, color 0.3s;
+    padding: 1rem;
 }
 
 .container {
     text-align: center;
     max-width: 400px;
     width: 100%;
-    padding: 20px;
 }
 
 header {
     margin-bottom: 2rem;
-    /* Adicione esta linha */
+    position: relative;
 }
 
 header h1 {
@@ -63,27 +63,24 @@ header h1 {
     margin-bottom: 0.5rem;
 }
 
-header p {
-    color: #94a3b8;
-    /* Cor secundária para o subtítulo */
-}
-
 #theme-toggle {
     position: absolute;
-    top: 0;
+    top: 50%;
     right: 0;
+    transform: translateY(-50%);
     background: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 40px;
+    border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: var(--text-color);
-    transition: transform 0.2s, background-color 0.3s;
+    transition: transform 0.2s;
+    padding: 0.5rem;
 }
+
+#theme-toggle:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
 
 .timer-card {
     background-color: var(--card-bg-color);
@@ -93,17 +90,58 @@ header p {
     transition: background-color 0.3s;
 }
 
+/* --- ESTILOS PARA OS BOTÕES DE MODO --- */
+.modes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.mode-button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--button-bg-color);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-button:hover {
+    background-color: var(--button-hover-bg-color);
+    border-color: var(--button-hover-bg-color);
+}
+
+.mode-button.active {
+    background-color: var(--primary-button-bg-color);
+    color: var(--primary-button-text-color);
+    border-color: var(--primary-button-bg-color);
+}
+
+
 #time-display {
-    font-size: 6rem;
+    font-size: 5rem;
+    /* Ajustado para telas menores */
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
+
+@media (min-width: 400px) {
+    #time-display {
+        font-size: 6rem;
+    }
+}
+
 
 #status-display {
     font-size: 1.2rem;
     color: #94a3b8;
     margin-bottom: 2rem;
     height: 20px;
+    transition: color 0.3s;
 }
 
 /* --- Configurações e Controles --- */
@@ -121,7 +159,7 @@ header p {
 
 #duration-input {
     width: 90px;
-    padding: 12px 24px;
+    padding: 12px;
     border-radius: 8px;
     border: none;
     background-color: var(--input-bg-color);
@@ -173,7 +211,7 @@ button:active {
     background-color: var(--button-hover-bg-color);
 }
 
-/* Estilo especial para o botão "Iniciar" */
+/* Estilo especial para o botão "Iniciar/Pausar" */
 #start-pause-button {
     background-color: var(--primary-button-bg-color);
     color: var(--primary-button-text-color);
